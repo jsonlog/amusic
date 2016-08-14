@@ -1,12 +1,16 @@
 package com.music;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
 
 import com.music.R;
 import com.music.util.Constant;
 import com.music.util.LrcView;
+import com.music.util.Mp3Info;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,17 +24,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class PlayActivity extends Activity {
 	private TextView titleView;// 歌曲标题
@@ -42,6 +52,7 @@ public class PlayActivity extends Activity {
 	private Button playBtn; // 播放（播放、暂停）
 	private Button shuffleBtn; // 随机播放
 	private Button nextBtn; // 下一首
+	private Button queueBtn;
 	private Receiver receiver;
 	
 	RelativeLayout ll_player_voice;	//音量控制面板布局
@@ -65,10 +76,11 @@ public class PlayActivity extends Activity {
 		ibtn_player_voice = (ImageButton) findViewById(R.id.ibtn_player_voice);
 		ll_player_voice = (RelativeLayout) findViewById(R.id.ll_player_voice);
 		sb_player_voice = (SeekBar) findViewById(R.id.sb_player_voice);	
+		queueBtn = (Button) findViewById(R.id.play_queue);
 		ibtn_player_voice.setOnClickListener(viewOnClickListener);	    
-//		queueBtn.setOnClickListener(ViewOnClickListener);  
+		queueBtn.setOnClickListener(viewOnClickListener);  
 		lrcView = (LrcView) findViewById(R.id.lrcShowView);
-	    sendIntent(Constant.playMSG.PLAY_MSG);	  
+//	    sendIntent(Constant.playMSG.PLAY_MSG);	  
 		receiver = new Receiver();
 		// 创建IntentFilter
 		IntentFilter filter = new IntentFilter();
@@ -225,17 +237,21 @@ public class PlayActivity extends Activity {
 		nextBtn.setOnClickListener(viewOnClickListener);
 	}	 
 	public void sendIntent(int MSG){
-		Intent intent = new Intent();
+		Intent intent = new Intent(this,PlayService.class);
 		intent.setPackage(getPackageName());
-		intent.setAction("com.music.media.MUSIC_SERVICE");
+		intent.setAction(Constant.SERVICE_ACTION);
 		intent.putExtra("MSG", MSG);
 		startService(intent);
 	}
-	public void sendIntent(int MSG,int progress){
+	public void sendIntent(int MSG,int position){
 		Intent intent = new Intent();
 		intent.setPackage(getPackageName());
-		intent.putExtra("currentTime", progress);
-		intent.setAction("com.music.media.MUSIC_SERVICE");
+		if(MSG == Constant.playMSG.PROGRESS_MSG){
+			intent.putExtra("currentTime", position);
+		}else{
+			intent.putExtra("location", position);
+		}
+		intent.setAction(Constant.SERVICE_ACTION);
 		intent.putExtra("MSG", MSG);
 		startService(intent);
 	}
@@ -250,20 +266,46 @@ public class PlayActivity extends Activity {
 			case R.id.repeat_music: MSG = Constant.playMSG.REPEAT_MSG;break;
 			case R.id.play_music: MSG = Constant.playMSG.PLAY_MSG;break;
 			case R.id.ibtn_player_voice: voicePanelAnimation();break;
+			case R.id.play_queue: showPlayQueue();break;
 			}
 			sendIntent(MSG);
 		}
-	}	 
+	}
+	private void showPlayQueue(){
+		LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View playQueueLayout = layoutInflater.inflate(R.layout.play_queue_layout, (ViewGroup)findViewById(R.id.play_queue_layout));
+		ListView queuelist = (ListView) playQueueLayout.findViewById(R.id.lv_play_queue);
+		
+		List<Mp3Info> mp3Infos = Constant.getMp3Infos(this);
+		List<HashMap<String, String>> queues = Constant.getMusicMaps(mp3Infos);
+		SimpleAdapter adapter = new SimpleAdapter(this, queues, R.layout.play_queue_item_layout, new String[]{"title",
+				"Artist", "duration"}, new int[]{R.id.music_title, R.id.music_Artist, R.id.music_duration});
+		queuelist.setAdapter(adapter);
+		AlertDialog.Builder builder;
+		final AlertDialog dialog;
+		builder = new AlertDialog.Builder(this);
+		dialog = builder.create();
+		dialog.setView(playQueueLayout);
+		dialog.show();
+		queuelist.setOnItemClickListener(new OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				sendIntent(Constant.playMSG.LOCATION_MSG,position);//TODO
+				dialog.dismiss();
+			}
+		});
+	}
 	/** 
 	 * * 反注册广播 
 	*/  
 	@Override  
 	protected void onStop() {  
 		unregisterReceiver(receiver);  
-		Intent MyIntent = new Intent(Intent.ACTION_MAIN);
-	    MyIntent.addCategory(Intent.CATEGORY_HOME);
-	    startActivity(MyIntent);
-	    finish();
+//		Intent MyIntent = new Intent(Intent.ACTION_MAIN);
+//	    MyIntent.addCategory(Intent.CATEGORY_HOME);
+//	    startActivity(MyIntent);
+//	    finish();
 		super.onStop();  
 	}  
 	public class Receiver extends BroadcastReceiver {
@@ -331,10 +373,6 @@ public class PlayActivity extends Activity {
 					break;
 				}
 			}
-//			else if(intent.getAction().equals(Constant.BUTTON_ACTION)){
-//				sendIntent(intent.getIntExtra("MSG",0));
-//				Log.v("rrrrrrrrrrrrr","buttonaction");
-//			}
 		}
 	}	
 }

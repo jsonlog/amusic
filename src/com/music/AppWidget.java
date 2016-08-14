@@ -220,7 +220,6 @@ public class AppWidget extends AppWidgetProvider {
 				views.setTextViewText(R.id.four_by_two_trackname, title);
 				Bitmap bm = Constant.getArtwork(context, intent.getLongExtra("Id", 0),intent.getLongExtra("AlbumId", 0), true, false);
 				views.setImageViewBitmap(R.id.four_by_two_albumart, bm);
-				Log.v("sssssssssssss",""+intent.getIntExtra("MSG", 0));
 				break;
 			}
 			Iterator<Integer> it = idsSet.iterator();int appID = 0;

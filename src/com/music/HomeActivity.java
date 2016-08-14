@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,6 +69,8 @@ public class HomeActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				sendIntent(Constant.playMSG.LOCATION_MSG,position);
+				Intent intent = new Intent(HomeActivity.this,PlayActivity.class);
+				startActivity(intent);
 			}
 		});
 		listView.setOnItemLongClickListener(new OnItemLongClickListener(){
@@ -122,9 +125,9 @@ public class HomeActivity extends Activity {
 		nextBtn.setOnClickListener(viewOnClickListener);
 	}
 	public void sendIntent(int MSG){
-		Intent intent = new Intent();
+		Intent intent = new Intent(this,PlayService.class);
 		intent.setPackage(getPackageName());
-		intent.setAction("com.music.media.MUSIC_SERVICE");
+		intent.setAction(Constant.SERVICE_ACTION);
 		intent.putExtra("MSG", MSG);
 		startService(intent);
 	}
@@ -132,7 +135,7 @@ public class HomeActivity extends Activity {
 		Intent intent = new Intent();
 		intent.setPackage(getPackageName());
 		intent.putExtra("location", position);
-		intent.setAction("com.music.media.MUSIC_SERVICE");
+		intent.setAction(Constant.SERVICE_ACTION);
 		intent.putExtra("MSG", MSG);
 		startService(intent);
 	}

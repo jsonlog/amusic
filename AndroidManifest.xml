@@ -39,8 +39,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <service 
-            android:process=":remote"
-            android:name=".PlayService">
+            android:name="com.music.PlayService">
             <intent-filter>
                 <action android:name="com.music.media.MUSIC_SERVICE"/>
             </intent-filter>

@@ -68,7 +68,7 @@ public class PlayService extends Service {
 	public void onCreate(){
 		super.onCreate();
 		mp3Infos = Constant.getMp3Infos(this);
-//		mp3Info = mp3Infos.get(location);
+		mp3Info = mp3Infos.get(location);
 		receiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Constant.BUTTON_ACTION);
@@ -106,46 +106,48 @@ public class PlayService extends Service {
 	@Override
 	public int onStartCommand(Intent intent,int flags,int startId){
 		Intent sendIntent = new Intent();	
-		int flag = 0;int playState = intent.getIntExtra("MSG", 0);
-		switch(playState){
-		case Constant.playMSG.PLAY_MSG:
-			if(mediaPlayer.isPlaying()){
-				playState = Constant.playMSG.PAUSE_MSG;//接着pause
-			}else{
-				play();flag = 1;break;
+		if(intent!=null){
+			int flag = 0;int playState = intent.getIntExtra("MSG", 0);
+			switch(playState){
+			case Constant.playMSG.PLAY_MSG:
+				if(mediaPlayer.isPlaying()){
+					playState = Constant.playMSG.PAUSE_MSG;//接着pause
+				}else{
+					play();flag = 1;break;
+				}
+			case Constant.playMSG.PAUSE_MSG:
+				mediaPlayer.pause();flag = 1;break;
+			case Constant.playMSG.PREVIOUS_MSG:
+				previous();flag = 1;break;
+			case Constant.playMSG.NEXT_MSG:
+				next();flag = 1;break;
+			case Constant.playMSG.LOCATION_MSG:
+				location(intent.getIntExtra("location", 0));flag = 1;break;
+			case Constant.playMSG.PROGRESS_MSG:
+				if(!mediaPlayer.isPlaying())break;
+				currentTime = intent.getIntExtra("currentTime", 0);
+				sendIntent.putExtra("currentTime", currentTime);
+				mediaPlayer.seekTo(currentTime);
+				break;
+			case Constant.playMSG.REPEAT_MSG:
+				repeat();
+				sendIntent.putExtra("repeat", repeat);break;
+			case Constant.playMSG.SHUFFLE_MSG:
+				shuffle();
+				sendIntent.putExtra("repeat", repeat);break;
 			}
-		case Constant.playMSG.PAUSE_MSG:
-			mediaPlayer.pause();flag = 1;break;
-		case Constant.playMSG.PREVIOUS_MSG:
-			previous();flag = 1;break;
-		case Constant.playMSG.NEXT_MSG:
-			next();flag = 1;break;
-		case Constant.playMSG.LOCATION_MSG:
-			location(intent.getIntExtra("location", 0));flag = 1;break;
-		case Constant.playMSG.PROGRESS_MSG:
-			if(!mediaPlayer.isPlaying())break;
-			currentTime = intent.getIntExtra("currentTime", 0);
-			sendIntent.putExtra("currentTime", currentTime);
-			mediaPlayer.seekTo(currentTime);
-			break;
-		case Constant.playMSG.REPEAT_MSG:
-			repeat();
-			sendIntent.putExtra("repeat", repeat);break;
-		case Constant.playMSG.SHUFFLE_MSG:
-			shuffle();
-			sendIntent.putExtra("repeat", repeat);break;
+			if(flag == 1){
+				sendIntent.putExtra("currentTime", currentTime);
+				sendIntent.putExtra("title", mp3Info.getTitle());
+				sendIntent.putExtra("artist", mp3Info.getArtist());
+				sendIntent.putExtra("duration", mp3Info.getDuration());
+				sendIntent.putExtra("Id",mp3Info.getId());
+				sendIntent.putExtra("AlbumId",mp3Info.getAlbumId());
+				sendIntent.putExtra("album", mp3Info.getAlbum());
+			}
+			play = playState;
+			broadcast(sendIntent);
 		}
-		if(flag == 1){
-			sendIntent.putExtra("currentTime", currentTime);
-			sendIntent.putExtra("title", mp3Info.getTitle());
-			sendIntent.putExtra("artist", mp3Info.getArtist());
-			sendIntent.putExtra("duration", mp3Info.getDuration());
-			sendIntent.putExtra("Id",mp3Info.getId());
-			sendIntent.putExtra("AlbumId",mp3Info.getAlbumId());
-			sendIntent.putExtra("album", mp3Info.getAlbum());
-		}
-		play = playState;
-		broadcast(sendIntent);
 		return super.onStartCommand(intent, Service.START_REDELIVER_INTENT, startId);
 	}
 	public void play(){
@@ -319,7 +321,6 @@ public class PlayService extends Service {
 		public void onReceive(Context context, Intent intent) {
 			if(intent.getAction() == Constant.BUTTON_ACTION){
 				onStartCommand(intent,0,0);
-				Log.v("rrrrrrrrrrrrr","buttonaction");
 			}
 		}
 	}

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/play_queue_layout"
     android:orientation="vertical" 
-    android:background="@drawable/main_bg03">
+    android:background="@drawable/bg_playback">
     <ListView
         android:id="@+id/lv_play_queue"
         android:layout_width="match_parent"

@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import android.content.ContentResolver;
@@ -29,6 +31,7 @@ public class Constant {
 //	public static final String MUSIC_DURATION = "com.playerm.action.MUSIC_DURATION";//音乐播放长度改变动作  
 //	/** 通知栏按钮点击事件对应的ACTION */
 	public final static String BUTTON_ACTION = "com.playerm.action.BUTTON_ACTION";
+	public static final String SERVICE_ACTION = "com.music.media.MUSIC_SERVICE";
 	public class playMSG{ 	
 		public static final int PLAY_MSG = 0;		//播放
 		public static final int PAUSE_MSG = 1;		//暂停
@@ -68,6 +71,29 @@ public class Constant {
 		//计算上一行与下一行的时间转换为毫秒数
 		int currentTime = (minute * 60 + second) * 1000 + millisecond * 10;
 		return currentTime;
+	}
+	/**
+	 * 往List集合中添加Map对象数据，每一个Map对象存放一首音乐的所有属性
+	 * @param mp3Infos
+	 * @return
+	 */
+	public static List<HashMap<String, String>> getMusicMaps(
+			List<Mp3Info> mp3Infos) {
+		List<HashMap<String, String>> mp3list = new ArrayList<HashMap<String, String>>();
+		for (Iterator iterator = mp3Infos.iterator(); iterator.hasNext();) {
+			Mp3Info mp3Info = (Mp3Info) iterator.next();
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put("title", mp3Info.getTitle());
+			map.put("Artist", mp3Info.getArtist());
+			map.put("album", mp3Info.getAlbum());
+			map.put("displayName", mp3Info.getDisplayName());
+			map.put("albumId", String.valueOf(mp3Info.getAlbumId()));
+			map.put("duration", formatTime(mp3Info.getDuration()));
+			map.put("size", String.valueOf(mp3Info.getSize()));
+			map.put("url", mp3Info.getUrl());
+			mp3list.add(map);
+		}
+		return mp3list;
 	}
 	/**
 	 * 格式化时间，将毫秒转换为分:秒格式
