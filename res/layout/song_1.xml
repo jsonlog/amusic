@@ -4,11 +4,9 @@
     android:layout_height="match_parent" 
     android:background="@android:color/white"     
     android:orientation="vertical" >
-    <!-- 
-<include layout="@layout/maintabs"/>
-    -->
+
     <ListView 
-        android:id="@+id/song_info"
+        android:id="@+id/singer_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         

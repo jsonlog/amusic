@@ -38,83 +38,46 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import android.app.Activity;
 
-public class SingActivity extends Activity {
+public class SongActivity extends Activity {
 
 	ListView listView;
 	SimpleAdapter simpleAdapter;
     List<Map<String,Object>>  datalists;
 
-    List<List<Map<String, Object>>> datalist = new ArrayList<List<Map<String, Object>>>();
+//    List<List<Map<String, Object>>> datalist = new ArrayList<List<Map<String, Object>>>();
 	List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
 	Map<String, Object> map =  new HashMap<String, Object>();
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.song_1);
-		listView = (ListView) findViewById(R.id.singer_info);
-		datalist = Constant.getSingerInfo(this);
+		setContentView(R.layout.song_2);
+		listView = (ListView) findViewById(R.id.song_info);
+//		datalist = Constant.getSingerInfo(this);
 		listView.setAdapter(new MyAdapter1(this));
-//		Toast.makeText(this, "歌手",Toast.LENGTH_SHORT).show();
 		listView.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				maps = datalist.get(position);//更新maps
-				if(maps.size() == 1){
-					sendIntent(Constant.playMSG.SINGER_MSG);
-					Intent intent = new Intent(SingActivity.this,PlayActivity.class);
-					startActivity(intent);
-				}
-				else{
-					Intent intent = new Intent(SingActivity.this,SongActivity.class);
-
-                    //传递数据
-                    final Constant.SerializableList myMap = new Constant.SerializableList();
-                    myMap.setList(maps);//将map数据添加封装的myMap中
-                    Bundle bundle=new Bundle();
-                    bundle.putSerializable("map", myMap);
-                    intent.putExtras(bundle);
-					startActivity(intent);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);  
-//                    Holder.linearLayout.removeAllViews();  
-//                    View view = getLocalActivityManager().startActivity(  
-//                            PollingManagementActivitySub.class.getSimpleName(), intent)  
-//                            .getDecorView();  
-//                    Holder.linearLayout.addView(view);  
-				}
+				sendIntent(Constant.playMSG.SINGER_MSG,position);
+				Intent intent = new Intent(SongActivity.this,PlayActivity.class);
+				startActivity(intent);
 			}
 		});
-		
+		onResume();
 	}
-//	Map<String, String[]> map;  
-//	Bundle bundle = new Bundle();  
-//	Set<String> keySet = map.keySet();  
-//	Iterator<String> iter = keySet.iterator();                      
-//	while(iter.hasNext())  
-//	{  
-//	    String key = iter.next();  
-//	    bundle.putStringArray(key, map.get(key));  
-//	}  
-//	intent.putExtra("map", bundle);  
-//
-//
-//	获取的方法如下：
-//	[java] view plain copy
-//	Map<String, String[]> map;  
-//	Bundle bundle = intent.getBundleExtra("map");  
-//	Set<String> keySet = bundle.keySet();   // 得到bundle中所有的key  
-//	Iterator<String> iter = keySet.iterator();  
-//	while(iter.hasNext())  
-//	{  
-//	    String key = iter.next();  
-//	    map.put(key, bundle.getStringArray(key));  
-//	}
-	public void sendIntent(int MSG){
+	@Override
+	public void onResume(){
+		super.onResume();
+		Bundle bundle = getIntent().getExtras();
+        SerializableList serializableMap = (SerializableList) bundle.get("map");
+        maps = serializableMap.getList();
+	}
+	public void sendIntent(int MSG,int position){
 		Intent intent = new Intent();
 		intent.setPackage(getPackageName());
-		intent.putExtra("url", maps.get(0).get("url").toString());
-		Log.v("uuuuuu",maps.get(0).get("url").toString());
+		intent.putExtra("url", maps.get(position).get("url").toString());
+		Log.v("uuuuuu",maps.get(position).get("url").toString());
 		intent.setAction(Constant.SERVICE_ACTION);
 		intent.putExtra("MSG", MSG);
 		startService(intent);
@@ -128,7 +91,7 @@ public class SingActivity extends Activity {
 		}
 
 		public int getCount() {
-			return datalist.size();
+			return maps.size();
 		}
 
 		public Object getItem(int position) {
@@ -144,23 +107,21 @@ public class SingActivity extends Activity {
 				ViewGroup parent) {
 			ViewHolder viewHolder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.song_1_item, null);
+				convertView = inflater.inflate(R.layout.song_2_item, null);
 				viewHolder = new ViewHolder();
 				viewHolder.imageview = (ImageView) convertView
-						.findViewById(R.id.singer_info_image);
+						.findViewById(R.id.song_info_image);
 				viewHolder.siner_name = (TextView) convertView
-						.findViewById(R.id.singer_info_name);
+						.findViewById(R.id.song_info_name);
 				
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
-			map = datalist.get(position).get(0);
-//			for(Map<String, Object> m : maps){
-//				if(!map.get("title").toString().contains(m.get("title").toString()))
-//				map.put("title",map.get("title").toString()+"--"+m.get("title").toString());
-//			}
-			viewHolder.siner_name.setText(map.get("artist").toString());
+//			viewHolder.imageview.setBackgroundResource(R.drawable.default_mini_singer);
+			
+			map = maps.get(position);
+			viewHolder.siner_name.setText(map.get("title").toString());
 			String id = map.get("id").toString();
 			String albumId = map.get("albumId").toString();
 			long Id = Long.valueOf(id);

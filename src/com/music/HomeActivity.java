@@ -172,7 +172,7 @@ public class HomeActivity extends Activity {
 				case Constant.playMSG.PLAY_MSG:
 				case Constant.playMSG.PREVIOUS_MSG:
 				case Constant.playMSG.NEXT_MSG:
-					progressView.setText(Constant.formatTime(intent.getExtras().getInt("currentTime")));
+					progressView.setText(Constant.formatTime(intent.getExtras().getLong("currentTime")));
 					titleView.setText(intent.getExtras().getString("title"));
 					artistView.setText(intent.getExtras().getString("artist"));
 					durationView.setText(Constant.formatTime(intent.getExtras().getLong("duration")));
@@ -181,7 +181,7 @@ public class HomeActivity extends Activity {
 				case Constant.playMSG.PAUSE_MSG:
 					playBtn.setBackgroundResource(R.drawable.play_selector);break;
 				case Constant.playMSG.PROGRESS_MSG:
-					progressView.setText(Constant.formatTime(intent.getIntExtra("currentTime", 0)));break;
+					progressView.setText(Constant.formatTime(intent.getLongExtra("currentTime", 0)));break;
 				case Constant.playMSG.REPEAT_MSG:
 					switch(intent.getIntExtra("repeat",0)){
 					case Constant.repeatState.isOrder:

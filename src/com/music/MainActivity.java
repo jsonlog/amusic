@@ -38,10 +38,10 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
         setContentView(R.layout.maintabs);
         
         this.mAIntent = new Intent(this,HomeActivity.class);
-        this.mBIntent = new Intent(this,PlayActivity.class);
+        this.mBIntent = new Intent(this,SingActivity.class);
 //        this.mAIntent = new Intent(this,PlayActivity.class);
 //        this.mBIntent = new Intent(this,HomeActivity.class);
-        this.mCIntent = new Intent(this,AActivity.class);
+        this.mCIntent = new Intent(this,SongActivity.class);
         
 		((RadioButton) findViewById(R.id.radio_button0))
 		.setOnCheckedChangeListener(this);

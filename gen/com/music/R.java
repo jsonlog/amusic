@@ -291,9 +291,9 @@ containing a value of this type.
         public static final int alertTitle=0x7f08000a;
         public static final int audioTrack=0x7f08004a;
         public static final int bar_setting_top=0x7f080031;
-        public static final int btn_custom_next=0x7f080059;
-        public static final int btn_custom_play=0x7f080058;
-        public static final int btn_custom_prev=0x7f080057;
+        public static final int btn_custom_next=0x7f08005c;
+        public static final int btn_custom_play=0x7f08005b;
+        public static final int btn_custom_prev=0x7f08005a;
         public static final int btn_menu=0x7f080032;
         public static final int button1=0x7f080012;
         public static final int button2=0x7f080014;
@@ -302,7 +302,7 @@ containing a value of this type.
         public static final int contentPanel=0x7f08000c;
         public static final int current_progress=0x7f080026;
         public static final int customPanel=0x7f08000f;
-        public static final int custom_song_icon=0x7f080055;
+        public static final int custom_song_icon=0x7f080058;
         public static final int dialogText=0x7f080016;
         public static final int final_progress=0x7f080029;
         public static final int footer_layout=0x7f080048;
@@ -331,12 +331,12 @@ containing a value of this type.
         public static final int iv_player_max_voice=0x7f080046;
         public static final int iv_player_min_voice=0x7f080045;
         public static final int leftSpacer=0x7f080011;
-        public static final int ll_custom_button=0x7f080056;
+        public static final int ll_custom_button=0x7f080059;
         public static final int ll_player_voice=0x7f080044;
         public static final int lrcShowView=0x7f08004c;
         public static final int lv_play_queue=0x7f08004e;
         public static final int main_radio=0x7f080000;
-        public static final int menu_settings=0x7f08005c;
+        public static final int menu_settings=0x7f08005f;
         public static final int message=0x7f08000e;
         public static final int music_Artist=0x7f080040;
         public static final int music_artist=0x7f080028;
@@ -365,11 +365,14 @@ containing a value of this type.
         public static final int singer_info_image=0x7f080053;
         public static final int singer_info_name=0x7f080054;
         public static final int singleSong_layout=0x7f08002a;
+        public static final int song_info=0x7f080055;
+        public static final int song_info_image=0x7f080056;
+        public static final int song_info_name=0x7f080057;
         public static final int titleDivider=0x7f08000b;
         public static final int title_template=0x7f080008;
         public static final int topPanel=0x7f080007;
-        public static final int tv_custom_song_name=0x7f08005b;
-        public static final int tv_custom_song_singer=0x7f08005a;
+        public static final int tv_custom_song_name=0x7f08005e;
+        public static final int tv_custom_song_singer=0x7f08005d;
         public static final int tv_setting_top_title=0x7f080050;
         public static final int tv_song_album=0x7f080038;
         public static final int tv_song_artist=0x7f080037;
@@ -399,9 +402,11 @@ containing a value of this type.
         public static final int play_queue_layout=0x7f03000f;
         public static final int setting_top=0x7f030010;
         public static final int skinsetting_layout=0x7f030011;
-        public static final int song_2=0x7f030012;
-        public static final int song_2_item=0x7f030013;
-        public static final int view_custom_button=0x7f030014;
+        public static final int song_1=0x7f030012;
+        public static final int song_1_item=0x7f030013;
+        public static final int song_2=0x7f030014;
+        public static final int song_2_item=0x7f030015;
+        public static final int view_custom_button=0x7f030016;
     }
     public static final class menu {
         public static final int activity_main=0x7f0b0000;

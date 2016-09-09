@@ -4,10 +4,15 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -19,6 +24,7 @@ import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.music.util.Mp3Info;
 import com.music.R;
@@ -41,6 +47,7 @@ public class Constant {
 		public static final int SHUFFLE_MSG = 5;	//
 		public static final int LOCATION_MSG=6;
 		public static final int PROGRESS_MSG = 7;//进度改变
+		public static final int SINGER_MSG = 8;//进度改变
 	}
 	public class repeatState{
 		public static final int isOrder = 0; // 无重复播放
@@ -48,6 +55,31 @@ public class Constant {
 		public static final int isAllRepeat = 2; // 全部循环
 		public static final int isShuffle = 3;// 随机播放
 	}
+	public static class SerializableList implements Serializable {
+		  
+	  private List<Map<String,Object>> list;
+
+	  public List<Map<String, Object>> getList() {
+	    return list;
+	  }
+
+	  public void setList(List<Map<String, Object>> list) {
+	    this.list = list;
+	  }
+
+	}
+//	public class SerializableMap implements Serializable {
+//
+//	    private Map<String,Object> map;
+//
+//	    public Map<String, Object> getMap() {
+//	        return map;
+//	    }
+//
+//	    public void setMap(Map<String, Object> map) {
+//	        this.map = map;
+//	    }
+//	}
 	/**
 	 * 解析歌词时间
 	 * 歌词内容格式如下：
@@ -117,6 +149,7 @@ public class Constant {
 		} else if (sec.length() == 1) {
 			sec = "0000" + (time % (1000 * 60)) + "";
 		}
+		Log.v("vvvvvvvvvv",time+"++"+min + ":" + sec.trim().substring(0, 2));
 		return min + ":" + sec.trim().substring(0, 2);
 	}
 	/**
@@ -328,4 +361,94 @@ public class Constant {
 		}
 		return mp3Infos;
 	}
+	public static List<List<Map<String, Object>>> getSingerInfo(Context c) {
+		List<Map<String, Object>> musicdata = new ArrayList<Map<String, Object>>();
+		List<List<Map<String, Object>>> musicdatas = new ArrayList<List<Map<String, Object>>>();
+//		Set<List<Map<String, Object>>> set = new LinkedHashSet<List<Map<String, Object>>>();
+//		Set<String> set = new HashSet<String>();  
+//		List<Map<String, Object>> musicdatas = new ArrayList<Map<String, Object>>();
+//		Map<String, Object> maps = new HashMap<String, Object>();
+		ContentResolver cr = c.getContentResolver();
+		Cursor cursor = cr.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+				null, null, null, MediaStore.Audio.Media.ARTIST_ID);
+		int count = 1;
+		boolean isfirstTime = true;
+		String artist = "";
+		if (cursor != null && cursor.getCount() > 0) {
+			for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor
+					.moveToNext()) {
+
+				String url = cursor.getString(cursor
+						.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+
+				if (url.endsWith(".mp3") || url.endsWith(".MP3")) {
+					long id=cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+					String title = cursor.getString(cursor
+							.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+	
+					int time = cursor
+							.getInt(cursor
+									.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+	
+					String name = cursor
+							.getString(cursor
+									.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
+	
+					String suffix = name
+							.substring(name.length() - 4, name.length());
+	
+					String album = cursor.getString(cursor
+							.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
+					long albumid = cursor
+							.getLong(cursor
+									.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+	
+					long size = cursor.getLong(cursor
+							.getColumnIndex(MediaStore.Audio.Media.SIZE)); // 文件大小
+	
+					String singer = cursor.getString(cursor
+							.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+					if(singer.equals(artist)){
+						count++;
+					}else{
+//						maps.put("count", count);
+						artist = singer;
+						if(isfirstTime){
+							isfirstTime = !isfirstTime;
+						}else{
+							musicdatas.add(musicdata);
+							count = 1;
+							musicdata = new ArrayList<Map<String, Object>>();
+						}
+					}
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("title", title);
+					map.put("artist", singer);
+					map.put("duration", time);
+					map.put("id", id);
+					map.put("displayName", name);
+					map.put("url", url);
+					map.put("albumId", albumid);
+					map.put("album", album);
+					map.put("size", size);
+//					map.put("SUFFIX", suffix);
+					musicdata.add(map);
+				}
+			}
+//			if(count != 1){
+				musicdatas.add(musicdata);
+//			}
+		}
+//		Iterator<List<Map<String, Object>>> it = set.iterator();  
+//		while (it.hasNext()) {  
+//			List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+//			maps = it.next(); 
+//			Map<String, Object> mapp =  new HashMap<String, Object>();
+//			mapp = maps.get(0);
+//			Log.v("mmmmmmmmmmm",mapp.get("title").toString());
+//		}  
+		return musicdatas;
+
+	}
+
 }
