@@ -13,7 +13,7 @@ import java.util.Set;
 
 import com.music.R;
 import com.music.util.Constant;
-import com.music.util.Constant.SerializableList;
+import com.music.util.Constant.SerializableMaplist;
 
 import android.app.Activity;
 import android.content.Context;
@@ -70,7 +70,7 @@ public class SingActivity extends Activity {
 					Intent intent = new Intent(SingActivity.this,SongActivity.class);
 
                     //传递数据
-                    final Constant.SerializableList myMap = new Constant.SerializableList();
+                    final Constant.SerializableMaplist myMap = new Constant.SerializableMaplist();
                     myMap.setList(maps);//将map数据添加封装的myMap中
                     Bundle bundle=new Bundle();
                     bundle.putSerializable("map", myMap);

@@ -55,7 +55,7 @@ public class Constant {
 		public static final int isAllRepeat = 2; // 全部循环
 		public static final int isShuffle = 3;// 随机播放
 	}
-	public static class SerializableList implements Serializable {
+	public static class SerializableMaplist implements Serializable {
 		  
 	  private List<Map<String,Object>> list;
 
@@ -68,6 +68,19 @@ public class Constant {
 	  }
 
 	}
+	public static class SerializableList implements Serializable {
+		
+		private List<LrcContent> list;
+
+		  public List<LrcContent> getList() {
+		    return list;
+		  }
+
+		  public void setList(List<LrcContent> list) {
+		    this.list = list;
+		  }
+
+		}
 //	public class SerializableMap implements Serializable {
 //
 //	    private Map<String,Object> map;
@@ -149,7 +162,6 @@ public class Constant {
 		} else if (sec.length() == 1) {
 			sec = "0000" + (time % (1000 * 60)) + "";
 		}
-		Log.v("vvvvvvvvvv",time+"++"+min + ":" + sec.trim().substring(0, 2));
 		return min + ":" + sec.trim().substring(0, 2);
 	}
 	/**

@@ -1,13 +1,17 @@
 package com.music;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.music.R;
 import com.music.util.Constant;
+import com.music.util.Constant.SerializableList;
+import com.music.util.LrcContent;
 import com.music.util.LrcView;
 import com.music.util.Mp3Info;
+import com.music.util.Constant.SerializableMaplist;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +68,7 @@ public class PlayActivity extends Activity {
 	private SeekBar music_progressBar;  //歌曲进度  
 	private AudioManager am;
 	public static LrcView lrcView;
+	private List<LrcContent> lrcList; //存放歌词列表对象 = new ArrayList<LrcContent>()
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -99,6 +105,16 @@ public class PlayActivity extends Activity {
     	sb_player_voice.setProgress(currentVolume);
     	
     	showNotify(Constant.playMSG.PLAY_MSG,"七里香","周杰伦",0,0);
+
+		//切换带动画显示歌词getBaseContext
+//    	lrcList = new ArrayList<LrcContent>();
+//		lrcView.setmLrcList(lrcList);
+//		lrcView.setAnimation(AnimationUtils.loadAnimation(this,R.anim.alpha_z));
+	}
+	@Override
+	public void onResume(){
+    	lrcList = null;
+		super.onResume();
 	}
 	public void showNotify(int MSG,String title,String artist,long Id,long AlbumId){
 		NotificationCompat.Builder mBuilder = new Builder(this);
@@ -308,6 +324,7 @@ public class PlayActivity extends Activity {
 //	    finish();
 		super.onStop();  
 	}  
+	
 	public class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -316,6 +333,16 @@ public class PlayActivity extends Activity {
 				case Constant.playMSG.PROGRESS_MSG:
 					int currentTime = intent.getIntExtra("currentTime", 0);
 //					playBtn.setBackgroundResource(R.drawable.pause_selector);
+
+			        if(lrcList == null){
+						Bundle bundle = intent.getExtras();
+				        SerializableList list = (SerializableList) bundle.get("list");
+			        	lrcList = list.getList();
+						lrcView.setmLrcList(lrcList);
+						lrcView.setAnimation(AnimationUtils.loadAnimation(context,R.anim.alpha_z));
+			        }
+					lrcView.setIndex(intent.getIntExtra("lrcIndex", 0));
+					lrcView.invalidate();
 					progressView.setText(Constant.formatTime(currentTime));
 					music_progressBar.setProgress(currentTime);break;
 				case Constant.playMSG.PLAY_MSG:
@@ -325,6 +352,7 @@ public class PlayActivity extends Activity {
 				case Constant.playMSG.LOCATION_MSG:
 					int current = intent.getExtras().getInt("currentTime");
 					long duration = intent.getExtras().getLong("duration");
+					int msg = intent.getIntExtra("MSG", 0);
 					String title = intent.getExtras().getString("title");
 					String artist = intent.getExtras().getString("artist");
 					titleView.setText(title);
@@ -333,13 +361,16 @@ public class PlayActivity extends Activity {
 					progressView.setText(Constant.formatTime(current));
 					music_progressBar.setProgress(current);//TODO
 					music_progressBar.setMax((int)duration);
-					if(intent.getIntExtra("MSG", 0) != Constant.playMSG.PAUSE_MSG){
+					showNotify(intent.getIntExtra("MSG", 0),title,artist,intent.getLongExtra("Id", 0),intent.getLongExtra("AlbumId", 0));
+					collapseStatusBar(context);
+					if(msg != Constant.playMSG.PAUSE_MSG){
 						playBtn.setBackgroundResource(R.drawable.pause_selector);
+						if(msg != Constant.playMSG.PLAY_MSG){
+							lrcList = null;//TODO
+						}
 					}else{
 						playBtn.setBackgroundResource(R.drawable.play_selector);
 					}
-					showNotify(intent.getIntExtra("MSG", 0),title,artist,intent.getLongExtra("Id", 0),intent.getLongExtra("AlbumId", 0));
-					collapseStatusBar(context);
 					break;
 				case Constant.playMSG.SHUFFLE_MSG:
 					switch(intent.getIntExtra("repeat", 0)){

@@ -13,7 +13,7 @@ import java.util.Set;
 
 import com.music.R;
 import com.music.util.Constant;
-import com.music.util.Constant.SerializableList;
+import com.music.util.Constant.SerializableMaplist;
 
 import android.app.Activity;
 import android.content.Context;
@@ -70,7 +70,7 @@ public class SongActivity extends Activity {
 	public void onResume(){
 		super.onResume();
 		Bundle bundle = getIntent().getExtras();
-        SerializableList serializableMap = (SerializableList) bundle.get("map");
+        SerializableMaplist serializableMap = (SerializableMaplist) bundle.get("map");
         maps = serializableMap.getList();
 	}
 	public void sendIntent(int MSG,int position){
