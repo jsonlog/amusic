@@ -146,7 +146,7 @@ public class Constant {
 	 * @param time
 	 * @return
 	 */
-	public static String formatTime(long time) {
+	public static String formatTime(int time) {
 		String min = time / (1000 * 60) + "";
 		String sec = time % (1000 * 60) + "";
 		if (min.length() < 2) {
@@ -351,8 +351,9 @@ public class Constant {
 			String displayName = cursor.getString(cursor
 					.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
 			long albumId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-			long duration = cursor.getLong(cursor
+			int duration = cursor.getInt(cursor
 					.getColumnIndex(MediaStore.Audio.Media.DURATION)); // 时长
+			//change to int for getLong error when int
 			long size = cursor.getLong(cursor
 					.getColumnIndex(MediaStore.Audio.Media.SIZE)); // 文件大小
 			String url = cursor.getString(cursor

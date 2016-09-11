@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +43,7 @@ public class PlayService extends Service {
 	private int play = Constant.playMSG.PLAY_MSG;
 	private int repeat = Constant.repeatState.isOrder;
 	private int currentTime = 0;
-	private long duration = 0;
+	private int duration = 0;
 	private Receiver receiver;
 	private boolean firstTime = true;
 	LrcContent mLrcContent = new LrcContent();
@@ -50,19 +53,27 @@ public class PlayService extends Service {
 	 */
 	private Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
-//			if(msg.getData().getLong("duration", 0) > 0){
+//			if(msg.getData().getInt("duration", 0) > 0){
 			if (msg.what == 1) {
 				currentTime = mediaPlayer.getCurrentPosition(); // 获取当前音乐播放的位置
 				Intent sendIntent = new Intent();
-                final Constant.SerializableList list = new Constant.SerializableList();
-                list.setList(lrcList);//将map数据添加封装的myMap中
-				Bundle extras = new Bundle();
-				extras.putSerializable("list", list);
-				sendIntent.putExtras(extras);
 				sendIntent.putExtra("currentTime", currentTime);
 				sendIntent.putExtra("lrcIndex", lrcIndex());
 				sendIntent.setPackage(getPackageName());
 				sendIntent.setAction(Constant.LRC_ACTION);
+				if(firstTime){
+	                final Constant.SerializableList list = new Constant.SerializableList();
+	                list.setList(lrcList);//将map数据添加封装的myMap中
+					Bundle extras = new Bundle();
+					extras.putSerializable("list", list);
+					sendIntent.putExtras(extras);
+					sendIntent.putExtra("firstTime", true);
+					Log.v("playing",firstTime+"");
+					sendIntent.putExtra("title", mp3Info.getTitle());
+					sendIntent.putExtra("artist", mp3Info.getArtist());
+					sendIntent.putExtra("duration", mp3Info.getDuration());
+					firstTime = false;
+				}
 				sendBroadcast(sendIntent);
 				if(mediaPlayer.isPlaying()){
 					handler.sendEmptyMessageDelayed(1, 1000);
@@ -179,12 +190,18 @@ public class PlayService extends Service {
 				mediaPlayer.start(); // 开始播放	
 				mediaPlayer.seekTo(currentTime);return;
 			}
+//			mediaPlayer = getMediaPlayer(this);
 			mediaPlayer.reset();
-			mp3Info = mp3Infos.get(location);//TODO  更新mp3
+			mp3Info = mp3Infos.get(location);
 			duration = mp3Info.getDuration();
-			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//			MediaPlayer mp = MediaPlayer.create(MainActivity.this,R.raw.baobao);
+			//mediaPlayer.prepare(); 
+//			SubtitleController sc = new SubtitleController(context, null, null);
+//			sc.mHandler = new Handler();
+//			mediaplayer.setSubtitleAnchor(sc, null)
 			mediaPlayer.setDataSource(mp3Info.getUrl());
-			mediaPlayer.prepare(); // 进行缓冲
+			mediaPlayer.prepareAsync();// 进行缓冲
 			mediaPlayer.setOnPreparedListener(new OnPreparedListener(){
 				@Override
 				public void onPrepared(MediaPlayer mp){
@@ -192,27 +209,56 @@ public class PlayService extends Service {
 				}
 			});
 			initLrc();
-			if(mediaPlayer.isPlaying()){
+			if(mediaPlayer.isPlaying()){//TODO  更新mp3
 				Log.v("initlrc",location+"_"+mp3Info.getTitle()+"--"+mp3Info.getUrl());
 			}
-//			if(firstTime){
-//				firstTime = false;
-//			}else{
-//			}		
 //			Message msg = new Message();
 //			Bundle bundleData = new Bundle();  
-//			bundleData.putLong("duration", mp3Info.getDuration());  
+//			bundleData.putInt("duration", mp3Info.getDuration());  
 //			msg.setData(bundleData);  
-//			Log.v("mmmmmmmmmm",msg.getData().getLong("duration")+"");
+//			Log.v("mmmmmmmmmm",msg.getData().getInt("duration")+"");
 //			handler.sendMessage(msg);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-//	public void singer(){
-//		
-//		play();
-//	}
+	static MediaPlayer getMediaPlayer(Context context){
+
+	    MediaPlayer mediaplayer = new MediaPlayer();
+
+	    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+	        return mediaplayer;
+	    }
+
+	    try {
+	        Class<?> cMediaTimeProvider = Class.forName( "android.media.MediaTimeProvider" );
+	        Class<?> cSubtitleController = Class.forName( "android.media.SubtitleController" );
+	        Class<?> iSubtitleControllerAnchor = Class.forName( "android.media.SubtitleController$Anchor" );
+	        Class<?> iSubtitleControllerListener = Class.forName( "android.media.SubtitleController$Listener" );
+
+	        Constructor constructor = cSubtitleController.getConstructor(new Class[]{Context.class, cMediaTimeProvider, iSubtitleControllerListener});
+
+	        Object subtitleInstance = constructor.newInstance(context, null, null);
+
+	        Field f = cSubtitleController.getDeclaredField("mHandler");
+
+	        f.setAccessible(true);
+	        try {
+	            f.set(subtitleInstance, new Handler());
+	        }
+	        catch (IllegalAccessException e) {return mediaplayer;}
+	        finally {
+	            f.setAccessible(false);
+	        }
+
+	        Method setsubtitleanchor = mediaplayer.getClass().getMethod("setSubtitleAnchor", cSubtitleController, iSubtitleControllerAnchor);
+
+	        setsubtitleanchor.invoke(mediaplayer, subtitleInstance, null);
+	        //Log.e("", "subtitle is setted :p");
+	    } catch (Exception e) {}
+
+	    return mediaplayer;
+	}
 	public void previous(){
 		location--;
 		if(location == -1) location = mp3Infos.size()-1;
@@ -267,6 +313,7 @@ public class PlayService extends Service {
 		}
 	}
 	public void initLrc(){
+		firstTime = true;
 		lrcList = new ArrayList<LrcContent>();
 
 		//定义一个StringBuilder对象，用来存放歌词内容
@@ -319,7 +366,7 @@ public class PlayService extends Service {
 	Runnable mRunnable = new Runnable() {
 		@Override
 		public void run() {
-			handler.postDelayed(mRunnable, 100);
+			handler.postDelayed(mRunnable, 1000);//100
 		}
 	};
 	/**

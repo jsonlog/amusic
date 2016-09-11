@@ -173,15 +173,13 @@ public class HomeActivity extends Activity {
 			}else if(action.equals(Constant.CTL_ACTION)){
 				switch(intent.getIntExtra("MSG", 0)){
 				case Constant.playMSG.LOCATION_MSG:
-					Intent sendIntent = new Intent(HomeActivity.this,PlayActivity.class);
-					startActivity(sendIntent);
 				case Constant.playMSG.PLAY_MSG:
 				case Constant.playMSG.PREVIOUS_MSG:
 				case Constant.playMSG.NEXT_MSG:
-					progressView.setText(Constant.formatTime(intent.getExtras().getLong("currentTime")));
+					progressView.setText(Constant.formatTime(intent.getExtras().getInt("currentTime")));
 					titleView.setText(intent.getExtras().getString("title"));
 					artistView.setText(intent.getExtras().getString("artist"));
-					durationView.setText(Constant.formatTime(intent.getExtras().getLong("duration")));
+					durationView.setText(Constant.formatTime(intent.getExtras().getInt("duration")));
 					playBtn.setBackgroundResource(R.drawable.pause_selector);
 					break;
 				case Constant.playMSG.PAUSE_MSG:

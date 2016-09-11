@@ -2,7 +2,7 @@ package com.music.util;
 
 public class Mp3Info {
 	private String title; // 歌曲名称 0
-	private long duration; // 歌曲时长 1
+	private int duration; // 歌曲时长 1
 	private String artist; // 歌手名称 2
 	private long id; // 歌曲ID 3
 	private String displayName; //显示名称 4
@@ -54,11 +54,11 @@ public class Mp3Info {
 		this.artist = artist;
 	}
 
-	public long getDuration() {
+	public int getDuration() {
 		return duration;
 	}
 
-	public void setDuration(long duration) {
+	public void setDuration(int duration) {
 		this.duration = duration;
 	}
 

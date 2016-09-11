@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
@@ -105,17 +106,16 @@ public class PlayActivity extends Activity {
     	sb_player_voice.setProgress(currentVolume);
     	
     	showNotify(Constant.playMSG.PLAY_MSG,"∆ﬂ¿Ôœ„","÷‹Ω‹¬◊",0,0);
-
-		//«–ªª¥¯∂Øª≠œ‘ æ∏Ë¥ getBaseContext
-//    	lrcList = new ArrayList<LrcContent>();
+	}
+//	@Override
+//	public void onResume(){
+//		titleView.setText(titleView.getText());
+//		artistView.setText(artistView.getText());
 //		lrcView.setmLrcList(lrcList);
 //		lrcView.setAnimation(AnimationUtils.loadAnimation(this,R.anim.alpha_z));
-	}
-	@Override
-	public void onResume(){
-    	lrcList = null;
-		super.onResume();
-	}
+//		super.onResume();		
+//		Log.v("PLAYING","resume"+titleView.getText());
+//	}
 	public void showNotify(int MSG,String title,String artist,long Id,long AlbumId){
 		NotificationCompat.Builder mBuilder = new Builder(this);
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.view_custom_button);
@@ -307,7 +307,7 @@ public class PlayActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				sendIntent(Constant.playMSG.LOCATION_MSG,position);//TODO
+				sendIntent(Constant.playMSG.LOCATION_MSG,position);
 				dialog.dismiss();
 			}
 		});
@@ -331,35 +331,40 @@ public class PlayActivity extends Activity {
 			String action = intent.getAction();
 			if(action.equals(Constant.LRC_ACTION)){
 				int currentTime = intent.getIntExtra("currentTime", 0);
-		        if(lrcList == null){
-					Bundle bundle = intent.getExtras();
-			        SerializableList list = (SerializableList) bundle.get("list");
-		        	lrcList = list.getList();
-					lrcView.setmLrcList(lrcList);
-					lrcView.setAnimation(AnimationUtils.loadAnimation(context,R.anim.alpha_z));
-					
-					//for activity not start TODO
+				if(intent.getBooleanExtra("firstTime", false)){//lrcList == null
+//					new Handler().postDelayed(new Runnable(){   
+//					    public void run() {   
+//					    }   
+//					 }, 8000);   
 					String title = intent.getExtras().getString("title");
 					String artist = intent.getExtras().getString("artist");
-					long duration = intent.getExtras().getLong("duration");
+					int duration = intent.getExtras().getInt("duration");
 					titleView.setText(title);
 					artistView.setText(artist);
 					durationView.setText(Constant.formatTime(duration));
+					playBtn.setBackgroundResource(R.drawable.pause_selector);
+					
+					Bundle bundle = intent.getExtras();
+			        SerializableList list = (SerializableList) bundle.get("list");
+//			    	lrcList = new ArrayList<LrcContent>();
+		        	lrcList = list.getList();
+					lrcView.setmLrcList(lrcList);
+					lrcView.setAnimation(AnimationUtils.loadAnimation(context,R.anim.alpha_z));
 		        }
 				lrcView.setIndex(intent.getIntExtra("lrcIndex", 0));
 				lrcView.invalidate();
 				progressView.setText(Constant.formatTime(currentTime));
 				music_progressBar.setProgress(currentTime);
-//				playBtn.setBackgroundResource(R.drawable.pause_selector);
 			}else if(action.equals(Constant.CTL_ACTION)){
 				switch(intent.getIntExtra("MSG", 0)){
-				case Constant.playMSG.PLAY_MSG:
 				case Constant.playMSG.PAUSE_MSG:
+					playBtn.setBackgroundResource(R.drawable.play_selector);break;
+				case Constant.playMSG.PLAY_MSG:
 				case Constant.playMSG.PREVIOUS_MSG:
 				case Constant.playMSG.NEXT_MSG:
 				case Constant.playMSG.LOCATION_MSG:
 					int current = intent.getExtras().getInt("currentTime");
-					long duration = intent.getExtras().getLong("duration");
+					int duration = intent.getExtras().getInt("duration");
 					int msg = intent.getIntExtra("MSG", 0);
 					String title = intent.getExtras().getString("title");
 					String artist = intent.getExtras().getString("artist");
@@ -368,18 +373,12 @@ public class PlayActivity extends Activity {
 					artistView.setText(artist);
 					durationView.setText(Constant.formatTime(duration));
 					progressView.setText(Constant.formatTime(current));
-					music_progressBar.setProgress(current);//TODO
+					music_progressBar.setProgress(current);
 					music_progressBar.setMax((int)duration);
 					showNotify(intent.getIntExtra("MSG", 0),title,artist,intent.getLongExtra("Id", 0),intent.getLongExtra("AlbumId", 0));
 					collapseStatusBar(context);
-					if(msg != Constant.playMSG.PAUSE_MSG){
+//					if(msg != Constant.playMSG.PAUSE_MSG){
 						playBtn.setBackgroundResource(R.drawable.pause_selector);
-						if(msg != Constant.playMSG.PLAY_MSG){
-							lrcList = null;//TODO
-						}
-					}else{
-						playBtn.setBackgroundResource(R.drawable.play_selector);
-					}
 					break;
 				case Constant.playMSG.SHUFFLE_MSG:
 					switch(intent.getIntExtra("repeat", 0)){

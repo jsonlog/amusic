@@ -144,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/play_selector" />
+                android:background="@drawable/pause_selector" />
 
             <Button
                 android:id="@+id/next_music"

@@ -48,7 +48,6 @@ public class SongActivity extends Activity {
 	List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
 	Map<String, Object> map =  new HashMap<String, Object>();
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.song_2);
@@ -99,7 +98,6 @@ public class SongActivity extends Activity {
 		}
 
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
