@@ -32,12 +32,13 @@ import com.music.R;
 public class Constant {
 	private static final Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
 //	public static final String UPDATE_ACTION = "com.music.action.UPDATE_ACTION";  //更新动作  
-	public static final String CTL_ACTION = "com.music.action.CTL_ACTION";        //控制动作  
+	public static final String CTL_ACTION = "com.music.action.CTL_ACTION";        //控制动作,service发出  
+	public static final String LRC_ACTION = "com.music.action.LRC_ACTION";        //播放进度控制动作,service发出  
 //	public static final String MUSIC_CURRENT = "com.music.action.MUSIC_CURRENT";  //音乐当前时间改变动作  
 //	public static final String MUSIC_DURATION = "com.playerm.action.MUSIC_DURATION";//音乐播放长度改变动作  
 //	/** 通知栏按钮点击事件对应的ACTION */
-	public final static String BUTTON_ACTION = "com.playerm.action.BUTTON_ACTION";
-	public static final String SERVICE_ACTION = "com.music.media.MUSIC_SERVICE";
+	public final static String BUTTON_ACTION = "com.music.action.BUTTON_ACTION"; //通知栏按钮点击事件对应的ACTION,service响应
+	public static final String SERVICE_ACTION = "com.music.media.MUSIC_SERVICE"; //后台启动service对应的ACTION,service响应
 	public class playMSG{ 	
 		public static final int PLAY_MSG = 0;		//播放
 		public static final int PAUSE_MSG = 1;		//暂停

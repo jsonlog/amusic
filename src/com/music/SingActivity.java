@@ -111,7 +111,7 @@ public class SingActivity extends Activity {
 //	    map.put(key, bundle.getStringArray(key));  
 //	}
 	public void sendIntent(int MSG){
-		Intent intent = new Intent();
+		Intent intent = new Intent(this,PlayService.class);
 		intent.setPackage(getPackageName());
 		intent.putExtra("url", maps.get(0).get("url").toString());
 		Log.v("uuuuuu",maps.get(0).get("url").toString());

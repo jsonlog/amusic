@@ -74,7 +74,7 @@ public class SongActivity extends Activity {
         maps = serializableMap.getList();
 	}
 	public void sendIntent(int MSG,int position){
-		Intent intent = new Intent();
+		Intent intent = new Intent(this,PlayService.class);
 		intent.setPackage(getPackageName());
 		intent.putExtra("url", maps.get(position).get("url").toString());
 		Log.v("uuuuuu",maps.get(position).get("url").toString());

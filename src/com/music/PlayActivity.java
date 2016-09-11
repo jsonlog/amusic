@@ -92,7 +92,7 @@ public class PlayActivity extends Activity {
 		IntentFilter filter = new IntentFilter();
 		// Ö¸¶¨BroadcastReceiver¼àÌýµÄAction
 		filter.addAction(Constant.CTL_ACTION);
-//		filter.addAction(Constant.BUTTON_ACTION);
+		filter.addAction(Constant.LRC_ACTION);
 		// ×¢²áBroadcastReceiver
 		registerReceiver(receiver, filter);
 	    
@@ -260,7 +260,7 @@ public class PlayActivity extends Activity {
 		startService(intent);
 	}
 	public void sendIntent(int MSG,int position){
-		Intent intent = new Intent();
+		Intent intent = new Intent(this,PlayService.class);
 		intent.setPackage(getPackageName());
 		if(MSG == Constant.playMSG.PROGRESS_MSG){
 			intent.putExtra("currentTime", position);
@@ -328,23 +328,31 @@ public class PlayActivity extends Activity {
 	public class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(intent.getAction().equals(Constant.CTL_ACTION)){
+			String action = intent.getAction();
+			if(action.equals(Constant.LRC_ACTION)){
+				int currentTime = intent.getIntExtra("currentTime", 0);
+		        if(lrcList == null){
+					Bundle bundle = intent.getExtras();
+			        SerializableList list = (SerializableList) bundle.get("list");
+		        	lrcList = list.getList();
+					lrcView.setmLrcList(lrcList);
+					lrcView.setAnimation(AnimationUtils.loadAnimation(context,R.anim.alpha_z));
+					
+					//for activity not start TODO
+					String title = intent.getExtras().getString("title");
+					String artist = intent.getExtras().getString("artist");
+					long duration = intent.getExtras().getLong("duration");
+					titleView.setText(title);
+					artistView.setText(artist);
+					durationView.setText(Constant.formatTime(duration));
+		        }
+				lrcView.setIndex(intent.getIntExtra("lrcIndex", 0));
+				lrcView.invalidate();
+				progressView.setText(Constant.formatTime(currentTime));
+				music_progressBar.setProgress(currentTime);
+//				playBtn.setBackgroundResource(R.drawable.pause_selector);
+			}else if(action.equals(Constant.CTL_ACTION)){
 				switch(intent.getIntExtra("MSG", 0)){
-				case Constant.playMSG.PROGRESS_MSG:
-					int currentTime = intent.getIntExtra("currentTime", 0);
-//					playBtn.setBackgroundResource(R.drawable.pause_selector);
-
-			        if(lrcList == null){
-						Bundle bundle = intent.getExtras();
-				        SerializableList list = (SerializableList) bundle.get("list");
-			        	lrcList = list.getList();
-						lrcView.setmLrcList(lrcList);
-						lrcView.setAnimation(AnimationUtils.loadAnimation(context,R.anim.alpha_z));
-			        }
-					lrcView.setIndex(intent.getIntExtra("lrcIndex", 0));
-					lrcView.invalidate();
-					progressView.setText(Constant.formatTime(currentTime));
-					music_progressBar.setProgress(currentTime);break;
 				case Constant.playMSG.PLAY_MSG:
 				case Constant.playMSG.PAUSE_MSG:
 				case Constant.playMSG.PREVIOUS_MSG:
@@ -355,6 +363,7 @@ public class PlayActivity extends Activity {
 					int msg = intent.getIntExtra("MSG", 0);
 					String title = intent.getExtras().getString("title");
 					String artist = intent.getExtras().getString("artist");
+					Log.v("msg",title + artist+msg);
 					titleView.setText(title);
 					artistView.setText(artist);
 					durationView.setText(Constant.formatTime(duration));

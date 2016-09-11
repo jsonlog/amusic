@@ -6,6 +6,7 @@ import com.music.R;
 import com.music.util.Constant;
 import com.music.util.Mp3Info;
 import com.music.util.MusicListAdapter;
+import com.music.util.Constant.SerializableList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +29,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
 
 public class HomeActivity extends Activity {
 	private ListView listView;
@@ -58,6 +60,7 @@ public class HomeActivity extends Activity {
 		IntentFilter filter = new IntentFilter();
 		// Ö¸¶¨BroadcastReceiver¼àÌýµÄAction
 		filter.addAction(Constant.CTL_ACTION);
+		filter.addAction(Constant.LRC_ACTION);
 		// ×¢²áBroadcastReceiver
 		registerReceiver(receiver, filter);
 		
@@ -132,7 +135,7 @@ public class HomeActivity extends Activity {
 		startService(intent);
 	}
 	public void sendIntent(int MSG,int position){
-		Intent intent = new Intent();
+		Intent intent = new Intent(this,PlayService.class);
 		intent.setPackage(getPackageName());
 		intent.putExtra("location", position);
 		intent.setAction(Constant.SERVICE_ACTION);
@@ -164,7 +167,10 @@ public class HomeActivity extends Activity {
 	public class Receiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(intent.getAction().equals(Constant.CTL_ACTION)){
+			String action = intent.getAction();
+			if(action.equals(Constant.LRC_ACTION)){
+				progressView.setText(Constant.formatTime(intent.getIntExtra("currentTime", 0)));
+			}else if(action.equals(Constant.CTL_ACTION)){
 				switch(intent.getIntExtra("MSG", 0)){
 				case Constant.playMSG.LOCATION_MSG:
 					Intent sendIntent = new Intent(HomeActivity.this,PlayActivity.class);
@@ -180,8 +186,6 @@ public class HomeActivity extends Activity {
 					break;
 				case Constant.playMSG.PAUSE_MSG:
 					playBtn.setBackgroundResource(R.drawable.play_selector);break;
-				case Constant.playMSG.PROGRESS_MSG:
-					progressView.setText(Constant.formatTime(intent.getLongExtra("currentTime", 0)));break;
 				case Constant.playMSG.REPEAT_MSG:
 					switch(intent.getIntExtra("repeat",0)){
 					case Constant.repeatState.isOrder:
