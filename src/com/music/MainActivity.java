@@ -37,11 +37,12 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.maintabs);
         
+//        this.mAIntent = new Intent(this,HomeActivity.class);
+//        this.mBIntent = new Intent(this,SingActivity.class);
+//        this.mCIntent = new Intent(this,AActivity.class);
         this.mAIntent = new Intent(this,HomeActivity.class);
-        this.mBIntent = new Intent(this,SingActivity.class);
-//        this.mAIntent = new Intent(this,PlayActivity.class);
-//        this.mBIntent = new Intent(this,HomeActivity.class);
-        this.mCIntent = new Intent(this,SongActivity.class);
+        this.mBIntent = new Intent(this,SecondGroupTab.class);
+        this.mCIntent = new Intent(this,AActivity.class);
         
 		((RadioButton) findViewById(R.id.radio_button0))
 		.setOnCheckedChangeListener(this);
@@ -87,7 +88,10 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
 		localTabHost.addTab(buildTabSpec("C_TAB",
 				R.string.main_manage_date, R.drawable.icon_1_n,
 				this.mCIntent));
-
+//		tabHost.addTab(  
+//                tabHost.newTabSpec("Second")  
+//                .setIndicator("Ñ¡Ïî¿¨¶þ")  
+//                .setContent(intent));  
 
         mTabHost.setCurrentTab(0);
 	}

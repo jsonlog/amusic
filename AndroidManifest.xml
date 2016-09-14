@@ -30,6 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".HomeActivity"/>
+        <activity android:name=".SecondGroupTab"/>
         <activity android:name=".SingActivity"/>
         <activity android:name=".SongActivity"/>
         <activity android:name=".AActivity"/>

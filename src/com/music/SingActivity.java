@@ -16,12 +16,15 @@ import com.music.util.Constant;
 import com.music.util.Constant.SerializableMaplist;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +77,14 @@ public class SingActivity extends Activity {
                     Bundle bundle=new Bundle();
                     bundle.putSerializable("map", myMap);
                     intent.putExtras(bundle);
-					startActivity(intent);
+//					startActivity(intent);
+                    
+                    
+                    Window w = SecondGroupTab.group.getLocalActivityManager()  
+                            .startActivity("SecondActivity",intent);  
+                    View views = w.getDecorView();  
+                    //设置要跳转的Activity显示为本ActivityGroup的内容  
+                    SecondGroupTab.group.setContentView(views);     
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);  
 //                    Holder.linearLayout.removeAllViews();  
 //                    View view = getLocalActivityManager().startActivity(  
@@ -109,6 +119,25 @@ public class SingActivity extends Activity {
 //	    String key = iter.next();  
 //	    map.put(key, bundle.getStringArray(key));  
 //	}
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		  if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+		   dialog();
+		  }
+		  return false;
+	}
+	protected void dialog() {
+		new AlertDialog.Builder(SingActivity.this).
+		setTitle(R.string.info).
+		setMessage(R.string.dialog_messenge).
+		setNegativeButton(R.string.confrim, new DialogInterface.OnClickListener(){
+			@Override
+			public void onClick(DialogInterface dialog, int which){
+				Intent intent = new Intent(SingActivity.this, PlayService.class);
+				stopService(intent);
+				finish();
+			}
+		}).setPositiveButton(R.string.cancel, null).show();
+	}
 	public void sendIntent(int MSG){
 		Intent intent = new Intent(this,PlayService.class);
 		intent.setPackage(getPackageName());

@@ -172,10 +172,10 @@ public class HomeActivity extends Activity {
 				progressView.setText(Constant.formatTime(intent.getIntExtra("currentTime", 0)));
 			}else if(action.equals(Constant.CTL_ACTION)){
 				switch(intent.getIntExtra("MSG", 0)){
-				case Constant.playMSG.LOCATION_MSG:
 				case Constant.playMSG.PLAY_MSG:
 				case Constant.playMSG.PREVIOUS_MSG:
 				case Constant.playMSG.NEXT_MSG:
+				case Constant.playMSG.LOCATION_MSG:
 					progressView.setText(Constant.formatTime(intent.getExtras().getInt("currentTime")));
 					titleView.setText(intent.getExtras().getString("title"));
 					artistView.setText(intent.getExtras().getString("artist"));

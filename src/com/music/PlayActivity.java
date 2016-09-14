@@ -350,6 +350,7 @@ public class PlayActivity extends Activity {
 		        	lrcList = list.getList();
 					lrcView.setmLrcList(lrcList);
 					lrcView.setAnimation(AnimationUtils.loadAnimation(context,R.anim.alpha_z));
+					Log.v("PLAYING",title);
 		        }
 				lrcView.setIndex(intent.getIntExtra("lrcIndex", 0));
 				lrcView.invalidate();
@@ -357,8 +358,6 @@ public class PlayActivity extends Activity {
 				music_progressBar.setProgress(currentTime);
 			}else if(action.equals(Constant.CTL_ACTION)){
 				switch(intent.getIntExtra("MSG", 0)){
-				case Constant.playMSG.PAUSE_MSG:
-					playBtn.setBackgroundResource(R.drawable.play_selector);break;
 				case Constant.playMSG.PLAY_MSG:
 				case Constant.playMSG.PREVIOUS_MSG:
 				case Constant.playMSG.NEXT_MSG:
@@ -377,9 +376,10 @@ public class PlayActivity extends Activity {
 					music_progressBar.setMax((int)duration);
 					showNotify(intent.getIntExtra("MSG", 0),title,artist,intent.getLongExtra("Id", 0),intent.getLongExtra("AlbumId", 0));
 					collapseStatusBar(context);
-//					if(msg != Constant.playMSG.PAUSE_MSG){
-						playBtn.setBackgroundResource(R.drawable.pause_selector);
+					playBtn.setBackgroundResource(R.drawable.pause_selector);
 					break;
+				case Constant.playMSG.PAUSE_MSG:
+					playBtn.setBackgroundResource(R.drawable.play_selector);break;
 				case Constant.playMSG.SHUFFLE_MSG:
 					switch(intent.getIntExtra("repeat", 0)){
 					case Constant.repeatState.isShuffle:
