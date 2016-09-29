@@ -1,0 +1,56 @@
+<resources>
+<!-- Content descriptions for the Bottom Action Bar -->
+<string name="cd_favorite">标记为喜爱的</string>
+<string name="cd_search">搜索您的音乐库</string>
+<string name="cd_overflow">更多选项</string>
+<string name="cd_bottom_action_bar_album_art">专辑图片</string>
+<string name="cd_repeat">重复一首或全部</string>
+<string name="cd_previous">前一首</string>
+<string name="cd_play">暂停/继续</string>
+<string name="cd_next">下一首</string>
+<string name="cd_shuffle">随机播放</string>
+<string name="menu_title">iHappy音乐播放器</string>
+<string name="menu_sig">让音乐愉悦您的心，天天iHappy</string>
+
+<string name="hello">Hello World, MainTabActivity!</string>
+<string name="main_home">歌曲</string>
+<string name="main_news">歌手</string>
+<string name="main_manage_date">专辑</string>
+<string name="main_friends">D</string>
+<string name="more">E</string>
+
+<string name="app_name">Music</string>
+<string name="menu_settings">Settings</string>
+<string name="title_activity_main">Music</string>
+<string name="siger">music</string>
+<string name="artist">player</string>
+<string name="start">0:00</string>
+<string name="time">4:50</string>
+<string name="cancel">取消</string>
+<string  name="confrim">确定</string>
+<string name="shuffle_none">随机播放已关闭</string>
+<string name="shuffle">随机播放已打开</string>
+<string name="repeat_none">重复播放已关闭</string>
+<string name="repeat_current">重复播放当前歌曲</string>
+<string name="repeat_all">重复播放所有歌曲</string>
+<string name="operation">将此歌曲处理为</string>
+<string name="playing">正在播放。。。</string>
+<string name="skin_settings">皮肤设置</string>
+<string name="menu_exit_txt">退出</string>
+<string name="oftenuse">常用</string>
+<string name="about_infomation">本播放器仅供学习和技术交流之用</string>
+<string name="brightness_title">日照模式</string>
+<string name="darkness_title">夜晚模式</string>
+<string name="info">操作:</string>
+<string name="dialog_messenge">你确定要退出程序吗？</string>
+<string name="about_title">关于</string>
+<string name="menu_time_txt">定时关闭</string>
+<string name="widget_style_title">控件风格</string>
+<string name="widget_style_summary">可选择窗口小部件的具体风格</string>
+<string name="widget_style_dark">完全昏暗</string>
+<string name="widget_style_light">整体光亮</string>
+<!-- App Widgets -->
+<string name="apollo_1x1">iHappyMusic (1x1)</string>
+<string name="apollo_4x1">iHappyMusic (4x1)</string>
+<string name="apollo_4x2">music (4x2)</string>
+</resources>
