@@ -20,7 +20,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.music.util.Constant;
 import com.music.util.Mp3Info;
@@ -221,15 +220,15 @@ public class HomeActivity extends Activity {
 					case Constant.playMSG.REPEAT_MSG:
 						switch(intent.getIntExtra("repeat",0)){
 							case Constant.repeatState.isOrder:
-								Toast.makeText(context, "循环播放已关闭", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "循环播放已关闭", Toast.LENGTH_SHORT).show();
 								repeatBtn.setBackgroundResource(R.drawable.repeat_none_selector);
 								break;
 							case Constant.repeatState.isCurrentRepeat:
-								Toast.makeText(context, "重复播放已打开", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "重复播放已打开", Toast.LENGTH_SHORT).show();
 								repeatBtn.setBackgroundResource(R.drawable.repeat_current_selector);
 								break;
 							case Constant.repeatState.isAllRepeat:
-								Toast.makeText(context, "循环播放已打开", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "循环播放已打开", Toast.LENGTH_SHORT).show();
 								repeatBtn.setBackgroundResource(R.drawable.repeat_all_selector);
 								break;
 						}
@@ -238,11 +237,11 @@ public class HomeActivity extends Activity {
 					case Constant.playMSG.SHUFFLE_MSG:
 						switch(intent.getIntExtra("repeat", 0)){
 							case Constant.repeatState.isShuffle:
-								Toast.makeText(context, "随机播放已打开", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "随机播放已打开", Toast.LENGTH_SHORT).show();
 								shuffleBtn.setBackgroundResource(R.drawable.shuffle_selector);
 								break;
 							case Constant.repeatState.isOrder:
-								Toast.makeText(context, "随机播放已关闭", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "随机播放已关闭", Toast.LENGTH_SHORT).show();
 								shuffleBtn.setBackgroundResource(R.drawable.shuffle_none_selector);
 								break;
 						}

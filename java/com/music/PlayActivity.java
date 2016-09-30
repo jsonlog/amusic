@@ -71,7 +71,7 @@ public class PlayActivity extends Activity {
 	private SeekBar music_progressBar;  //歌曲进度
 	private AudioManager am;
 	public static LrcView lrcView;
-	private List<LrcContent> lrcList = new ArrayList<LrcContent>(); //存放歌词列表对象 = null
+	private List<LrcContent> lrcList = new ArrayList<>(); //存放歌词列表对象 = null
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -170,6 +170,8 @@ public class PlayActivity extends Activity {
 				.setPriority(Notification.PRIORITY_DEFAULT)// 设置该通知优先级
 				.setOngoing(true)
 				.setSmallIcon(R.mipmap.icon);
+		//		PendingIntent pendingIntent= PendingIntent.getActivity(this, 1, new Intent(), Notification.FLAG_ONGOING_EVENT);
+
 		Notification notify = mBuilder.build();
 		notify.flags = Notification.FLAG_ONGOING_EVENT;
 		//会报错，还在找解决思路
@@ -181,6 +183,8 @@ public class PlayActivity extends Activity {
 	public static void collapseStatusBar(Context context) {
 		try {
 			Object statusBarManager = context.getSystemService("statusbar");
+			//			Object statusBarManager = context.getSystemService("statusbar");
+
 			Method collapse;
 			if (Build.VERSION.SDK_INT <= 16) {
 				collapse = statusBarManager.getClass().getMethod("collapse");
@@ -339,14 +343,14 @@ public class PlayActivity extends Activity {
 		new AlertDialog.Builder(this).
 				setTitle(R.string.info).
 				setMessage(R.string.dialog_messenge).
-				setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+				setNegativeButton(R.string.confrim, new DialogInterface.OnClickListener(){
 					@Override
 					public void onClick(DialogInterface dialog, int which){
 						Intent intent = new Intent(PlayActivity.this, PlayService.class);
 						stopService(intent);
 						finish();
 					}
-				}).setPositiveButton(R.string.confrim, null).show();
+				}).setPositiveButton(R.string.cancel, null).show();
 	}
 	public class Receiver extends BroadcastReceiver {
 		@Override
@@ -354,11 +358,7 @@ public class PlayActivity extends Activity {
 			String action = intent.getAction();
 			if(action.equals(Constant.LRC_ACTION)){
 				int currentTime = intent.getIntExtra("currentTime", 0);
-				if(intent.getIntExtra("firstTime", 0) == 3){//lrcList == null
-//					new Handler().postDelayed(new Runnable(){
-//					    public void run() {
-//					    }
-//					 }, 8000);
+				if(intent.getIntExtra("firstTime", 0) == 1){//lrcList == null
 					String title = intent.getExtras().getString("title");
 					String artist = intent.getExtras().getString("artist");
 					int duration = intent.getExtras().getInt("duration");
@@ -412,11 +412,11 @@ public class PlayActivity extends Activity {
 						switch(intent.getIntExtra("repeat", 0)){
 							case Constant.repeatState.isShuffle:
 								shuffleBtn.setBackgroundResource(R.drawable.shuffle_selector);
-								Toast.makeText(context, "随机播放已打开", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "随机播放已打开", Toast.LENGTH_SHORT).show();
 								break;
 							case Constant.repeatState.isOrder:
 								shuffleBtn.setBackgroundResource(R.drawable.shuffle_none_selector);
-								Toast.makeText(context, "随机播放已关闭", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "随机播放已关闭", Toast.LENGTH_SHORT).show();
 								break;
 						}
 						repeatBtn.setBackgroundResource(R.drawable.repeat_none_selector);
@@ -425,15 +425,15 @@ public class PlayActivity extends Activity {
 						switch(intent.getIntExtra("repeat",0)){
 							case Constant.repeatState.isOrder:
 								repeatBtn.setBackgroundResource(R.drawable.repeat_none_selector);
-								Toast.makeText(context, "循环播放已关闭", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "循环播放已关闭", Toast.LENGTH_SHORT).show();
 								break;
 							case Constant.repeatState.isCurrentRepeat:
-								Toast.makeText(context, "重复播放已打开", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "重复播放已打开", Toast.LENGTH_SHORT).show();
 								repeatBtn.setBackgroundResource(R.drawable.repeat_current_selector);
 								break;
 							case Constant.repeatState.isAllRepeat:
 								repeatBtn.setBackgroundResource(R.drawable.repeat_all_selector);
-								Toast.makeText(context, "循环播放已打开", Toast.LENGTH_SHORT).show();
+								//Toast.makeText(context, "循环播放已打开", Toast.LENGTH_SHORT).show();
 								break;
 						}
 						shuffleBtn.setBackgroundResource(R.drawable.shuffle_none_selector);

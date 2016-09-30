@@ -62,10 +62,10 @@ public class PlayService extends Service {
 				sendIntent.putExtra("lrcIndex", lrcIndex());
 				sendIntent.setPackage(getPackageName());
 				sendIntent.setAction(Constant.LRC_ACTION);
-				if(firstTime < 3){
-					firstTime ++;
-				}
-				if(firstTime == 3){
+//				if(firstTime < 2){
+//					firstTime ++;
+//				}
+				if(firstTime == 1){
 					final Constant.SerializableList list = new Constant.SerializableList();
 					list.setList(lrcList);//将map数据添加封装的myMap中
 					Bundle extras = new Bundle();
@@ -97,7 +97,7 @@ public class PlayService extends Service {
 	public void onCreate(){
 		super.onCreate();
 		mp3Infos = Constant.getMp3Infos(this);
-		mp3Info = mp3Infos.get(location);
+//		mp3Info = mp3Infos.get(location);
 		receiver = new Receiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Constant.BUTTON_ACTION);
@@ -197,6 +197,7 @@ public class PlayService extends Service {
 			broadcast(sendIntent);
 		}
 		return super.onStartCommand(intent, Service.START_REDELIVER_INTENT, startId);
+		//Error:(199, 39) Must be one or more of: Service.START_FLAG_REDELIVERY, Service.START_FLAG_RETRY
 	}
 	public void play(){
 		try{
@@ -378,7 +379,7 @@ public class PlayService extends Service {
 	Runnable mRunnable = new Runnable() {
 		@Override
 		public void run() {
-			handler.postDelayed(mRunnable, 1000);//100
+			handler.postDelayed(mRunnable, 8000);//100
 		}
 	};
 	/**

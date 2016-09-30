@@ -59,7 +59,7 @@ public class Constant {
 	}
 	public static class SerializableMaplist implements Serializable {
 
-		private List<Map<String,Object>> list;
+		private List<Map<String,Object>> list = new ArrayList<>();
 
 		public List<Map<String, Object>> getList() {
 			return list;
@@ -72,7 +72,7 @@ public class Constant {
 	}
 	public static class SerializableList implements Serializable {
 
-		private List<LrcContent> list;
+		private List<LrcContent> list = new ArrayList<>();
 
 		public List<LrcContent> getList() {
 			return list;
