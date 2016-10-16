@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.widget.TextView;
+
 public class AActivity extends AppCompatActivity {
 
     @Override

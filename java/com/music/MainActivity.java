@@ -1,12 +1,15 @@
 package com.music;
 
 
+import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -15,7 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.TabHost;
 
-public class MainActivity extends TabActivity implements OnCheckedChangeListener{
+public class MainActivity extends TabActivity implements OnCheckedChangeListener {
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
@@ -28,7 +31,9 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     private Intent mBIntent;
     private Intent mCIntent;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +43,9 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
 //        this.mAIntent = new Intent(this,HomeActivity.class);
 //        this.mBIntent = new Intent(this,SingActivity.class);
 //        this.mCIntent = new Intent(this,AActivity.class);
-        this.mAIntent = new Intent(this,HomeActivity.class);
-        this.mBIntent = new Intent(this,SecondGroupTab.class);
-        this.mCIntent = new Intent(this,ThirdGroupTab.class);
+        this.mAIntent = new Intent(this, HomeActivity.class);
+        this.mBIntent = new Intent(this, SecondGroupTab.class);
+        this.mCIntent = new Intent(this, ThirdGroupTab.class);
 
         ((RadioButton) findViewById(R.id.radio_button0))
                 .setOnCheckedChangeListener(this);
@@ -54,9 +59,10 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
         //滑动事件
         gestureDetector = new GestureDetector(new TabGestureDetector());
     }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(isChecked){
+        if (isChecked) {
             switch (buttonView.getId()) {
                 case R.id.radio_button0:
                     this.mTabHost.setCurrentTabByTag("A_TAB");
@@ -98,6 +104,7 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
         return this.mTabHost.newTabSpec(tag).setIndicator(getString(resLabel),
                 getResources().getDrawable(resIcon)).setContent(content);
     }
+
     // 左右滑动刚好页面也有滑动效果
     private class TabGestureDetector extends SimpleOnGestureListener {
         @Override
@@ -112,14 +119,14 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
 
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Log.i("test", "right" +currentView);
-                    if (currentView<maxTabIndex) {
+                    Log.i("test", "right" + currentView);
+                    if (currentView < maxTabIndex) {
                         currentView++;
                         mTabHost.setCurrentTab(currentView);
                     }
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Log.i("test", "left" +currentView);
+                    Log.i("test", "left" + currentView);
                     if (currentView > 0) {
                         currentView--;
                         mTabHost.setCurrentTab(currentView);
@@ -140,5 +147,37 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
             event.setAction(MotionEvent.ACTION_CANCEL);
         }
         return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        boolean back = super.dispatchKeyEvent(event);
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+//                && event.getAction() == KeyEvent.ACTION_DOWN
+                && event.getRepeatCount() == 0) {
+            Intent intent = new Intent(MainActivity.this, PlayService.class);
+            stopService(intent);
+            finish();
+        }
+        return back;
+    }
+
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) { //&& event.getRepeatCount() == 0) {
+//            dialog();
+//        }
+//        return false;
+//    }
+
+    protected void dialog() {
+        new AlertDialog.Builder(this).
+                setTitle(R.string.info).
+                setMessage(R.string.dialog_messenge).
+                setNegativeButton(R.string.confrim, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();//TODO
+                    }
+                }).setPositiveButton(R.string.cancel, null).show();
     }
 }

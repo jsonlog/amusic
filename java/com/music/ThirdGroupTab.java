@@ -9,8 +9,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 
+
 //第一个标签页显示的Activity，继承ActivityGroup，管理所有子Activity
 public class ThirdGroupTab extends ActivityGroup {
+
     //用于管理本Group中的所有Activity
     public static ActivityGroup group;
 
@@ -38,19 +40,21 @@ public class ThirdGroupTab extends ActivityGroup {
         //设置要跳转的Activity显示为本ActivityGroup的内容
         group.setContentView(view);
     }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             dialog();
         }
         return false;
     }
+
     protected void dialog() {
         new AlertDialog.Builder(ThirdGroupTab.this).
                 setTitle(R.string.info).
                 setMessage(R.string.dialog_messenge).
-                setNegativeButton(R.string.confrim, new DialogInterface.OnClickListener(){
+                setNegativeButton(R.string.confrim, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which){
+                    public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(ThirdGroupTab.this, PlayService.class);
                         stopService(intent);
                         finish();
@@ -58,3 +62,4 @@ public class ThirdGroupTab extends ActivityGroup {
                 }).setPositiveButton(R.string.cancel, null).show();
     }
 }
+

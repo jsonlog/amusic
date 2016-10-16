@@ -29,6 +29,9 @@ import android.util.Log;
 import com.music.util.Mp3Info;
 import com.music.R;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import static android.os.Build.VERSION_CODES.M;
+
 public class Constant {
 	private static final Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
 	//	public static final String UPDATE_ACTION = "com.music.action.UPDATE_ACTION";  //更新动作
@@ -100,8 +103,6 @@ public class Constant {
 	 * [00:02.32]陈奕迅
 	 * [00:03.43]好久不见
 	 * [00:05.22]歌词制作  王涛
-	 * @param timeStr
-	 * @return
 	 */
 	public static int time2Str(String timeStr) {
 		timeStr = timeStr.replace(":", ".");
@@ -115,20 +116,17 @@ public class Constant {
 		int millisecond = Integer.parseInt(timeData[2]);
 
 		//计算上一行与下一行的时间转换为毫秒数
-		int currentTime = (minute * 60 + second) * 1000 + millisecond * 10;
-		return currentTime;
+		return (minute * 60 + second) * 1000 + millisecond * 10;
 	}
 	/**
 	 * 往List集合中添加Map对象数据，每一个Map对象存放一首音乐的所有属性
-	 * @param mp3Infos
-	 * @return
 	 */
 	public static List<HashMap<String, String>> getMusicMaps(
 			List<Mp3Info> mp3Infos) {
-		List<HashMap<String, String>> mp3list = new ArrayList<HashMap<String, String>>();
+		List<HashMap<String, String>> mp3list = new ArrayList<>();
 		for (Iterator iterator = mp3Infos.iterator(); iterator.hasNext();) {
 			Mp3Info mp3Info = (Mp3Info) iterator.next();
-			HashMap<String, String> map = new HashMap<String, String>();
+			HashMap<String, String> map = new HashMap<>();
 			map.put("title", mp3Info.getTitle());
 			map.put("Artist", mp3Info.getArtist());
 			map.put("album", mp3Info.getAlbum());
@@ -143,8 +141,6 @@ public class Constant {
 	}
 	/**
 	 * 格式化时间，将毫秒转换为分:秒格式
-	 * @param time
-	 * @return
 	 */
 	public static String formatTime(int time) {
 		String min = time / (1000 * 60) + "";
@@ -167,11 +163,6 @@ public class Constant {
 	}
 	/**
 	 * 获取专辑封面位图对象
-	 * @param context
-	 * @param song_id
-	 * @param album_id
-	 * @param allowdefalut
-	 * @return
 	 */
 	public static Bitmap getArtwork(Context context, long song_id, long album_id, boolean allowdefalut, boolean small){
 		if(album_id < 0) {
@@ -239,10 +230,8 @@ public class Constant {
 	}
 	/**
 	 * 获取默认专辑图片
-	 * @param context
-	 * @return
 	 */
-	public static Bitmap getDefaultArtwork(Context context,boolean small) {
+	private static Bitmap getDefaultArtwork(Context context,boolean small) {
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inPreferredConfig = Bitmap.Config.RGB_565;
 		if(small){	//返回小图片
@@ -252,11 +241,8 @@ public class Constant {
 	}
 	/**
 	 * 对图片进行合适的缩放
-	 * @param options
-	 * @param target
-	 * @return
 	 */
-	public static int computeSampleSize(Options options, int target) {
+	private static int computeSampleSize(Options options, int target) {
 		int w = options.outWidth;
 		int h = options.outHeight;
 		int candidateW = w / target;
@@ -279,10 +265,6 @@ public class Constant {
 	}
 	/**
 	 * 从文件当中获取专辑封面位图
-	 * @param context
-	 * @param songid
-	 * @param albumid
-	 * @return
 	 */
 	private static Bitmap getArtworkFromFile(Context context, long songid, long albumid){
 		Bitmap bm = null;
@@ -329,14 +311,13 @@ public class Constant {
 	/**
 	 * 用于从数据库中查询歌曲的信息，保存在List当中
 	 *
-	 * @return
 	 */
 	public static List<Mp3Info> getMp3Infos(Context context) {
 		Cursor cursor = context.getContentResolver().query(
 				MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
 				MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
 
-		List<Mp3Info> mp3Infos = new ArrayList<Mp3Info>();
+		List<Mp3Info> mp3Infos = new ArrayList<>();
 		for (int i = 0; i < cursor.getCount(); i++) {
 			cursor.moveToNext();
 			Mp3Info mp3Info = new Mp3Info();
@@ -373,11 +354,12 @@ public class Constant {
 				mp3Infos.add(mp3Info);
 			}
 		}
+		cursor.close();
 		return mp3Infos;
 	}
 	public static List<List<Map<String, Object>>> getSingerInfo(Context c) {
-		List<Map<String, Object>> musicdata = new ArrayList<Map<String, Object>>();
-		List<List<Map<String, Object>>> musicdatas = new ArrayList<List<Map<String, Object>>>();
+		List<Map<String, Object>> musicdata = new ArrayList<>();
+		List<List<Map<String, Object>>> musicdatas = new ArrayList<>();
 //		Set<List<Map<String, Object>>> set = new LinkedHashSet<List<Map<String, Object>>>();
 //		Set<String> set = new HashSet<String>();
 //		List<Map<String, Object>> musicdatas = new ArrayList<Map<String, Object>>();
@@ -428,14 +410,14 @@ public class Constant {
 //						maps.put("count", count);
 						artist = singer;
 						if(isfirstTime){
-							isfirstTime = !isfirstTime;
+							isfirstTime = false;
 						}else{
 							musicdatas.add(musicdata);
 							count = 1;
-							musicdata = new ArrayList<Map<String, Object>>();
+							musicdata = new ArrayList<>();
 						}
 					}
-					Map<String, Object> map = new HashMap<String, Object>();
+					Map<String, Object> map = new HashMap<>();
 					map.put("title", title);
 					map.put("artist", singer);
 					map.put("duration", time);
@@ -466,11 +448,12 @@ public class Constant {
 //				Log.v("mmmmmmmmmm2",maps.get(1).get("title").toString());
 //			}
 //		}
+		cursor.close();
 		return musicdatas;
 	}
 	public static List<List<Map<String, Object>>> getAlbumInfo(Context c) {
-		List<Map<String, Object>> musicdata = new ArrayList<Map<String, Object>>();
-		List<List<Map<String, Object>>> musicdatas = new ArrayList<List<Map<String, Object>>>();
+		List<Map<String, Object>> musicdata = new ArrayList<>();
+		List<List<Map<String, Object>>> musicdatas = new ArrayList<>();
 		ContentResolver cr = c.getContentResolver();
 		Cursor cursor = cr.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 				null, null, null, MediaStore.Audio.Media.ALBUM_ID);
@@ -520,10 +503,10 @@ public class Constant {
 						}else{
 							musicdatas.add(musicdata);
 							count = 1;
-							musicdata = new ArrayList<Map<String, Object>>();
+							musicdata = new ArrayList<>();
 						}
 					}
-					Map<String, Object> map = new HashMap<String, Object>();
+					Map<String, Object> map = new HashMap<>();
 					map.put("title", title);
 					map.put("artist", singer);
 					map.put("duration", time);
@@ -538,6 +521,7 @@ public class Constant {
 			}
 			musicdatas.add(musicdata);
 		}
+		cursor.close();//Cursor finalized without prior close()
 		return musicdatas;
 	}
 
